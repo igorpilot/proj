@@ -3,7 +3,8 @@ import axios from "axios";
 import {IUser} from "../models/IUser";
 
 
-export const API_URL = 'http://localhost:5000/api'
+export const API_URL = 'https://telegramback-4wjh.onrender.com/api'
+//http://localhost:5000/api
 export default class Store {
     user = {} as IUser;
     isAuth = false;
