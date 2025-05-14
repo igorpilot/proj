@@ -4,7 +4,7 @@ import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 
-const THREE_HOURS = 3 * 60 * 60 // мілісекунди
+const THREE_HOURS = 0.15 * 60 * 60 * 1000 // мілісекунди
 
 export const CoinRewardButton = observer(() => {
     const { store } = useContext(Context);
@@ -42,7 +42,7 @@ export const CoinRewardButton = observer(() => {
     }, [lastClaim]);
 
     const claimCoins = async () => {
-        await store.claimCoins(user.telegramId, store.user.balance)
+        await store.claimCoins(store.user)
         const now = Date.now();
         setLastClaim(now);
         setCanClaim(false);

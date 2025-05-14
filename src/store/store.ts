@@ -38,9 +38,9 @@ export default class Store {
             });
         }
     }
-    async claimCoins(userId: string, actuallyBalance: number) {
+    async claimCoins(userInfo:any) {
         try {
-            const res =await axios.post(`${API_URL}/claim-coins`, {userId, actuallyBalance});
+            const res =await axios.post(`${API_URL}/claim-coins`, {userInfo});
             this.setUser(res.data);
 
         } catch (e) {

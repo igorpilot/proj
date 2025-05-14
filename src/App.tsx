@@ -19,81 +19,31 @@ const App = observer(() => {
     const { store } = useContext(Context);
     const tg = window.Telegram.WebApp as any;
 
-    // Сила відправки даних при закритті
-    const sendLogoutData = useCallback(async () => {
+    const syncUserData = useCallback(async () => {
         if (!store.user?.telegramId) return;
 
-        console.log("Спроба відправити дані логауту...");
-
         try {
-            // Дублюючий механізм відправки
-            const sendWithFetch = async () => {
-                await fetch(`${API_URL}/logout`, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        userId: store.user.telegramId,
-                        balance: store.user.balance
-                    }),
-                    headers: { 'Content-Type': 'application/json' },
-                    keepalive: true
-                });
-            };
+            await fetch(`${API_URL}/logout`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    userInfo: store.user
+                }),
+                headers: { 'Content-Type': 'application/json' }
+            });
 
-            // Паралельно пробуємо два методи
-            await Promise.race([
-                sendWithFetch(),
-                new Promise((resolve) => {
-                    if (navigator.sendBeacon) {
-                        const blob = new Blob(
-                            [JSON.stringify({ userInfo: store.user })],
-                            { type: 'application/json' }
-                        );
-
-                        navigator.sendBeacon(`${API_URL}/logout`, blob);
-                        resolve(true);
-                    }
-                    resolve(false);
-                })
-            ]);
-
-            console.log("Дані логауту успішно відправлені");
+            console.log("✅ Баланс синхронізовано");
         } catch (error) {
-            console.error("Помилка при відправці даних:", error);
+            console.error("❌ Помилка синхронізації:", error);
         }
     }, [store.user]);
 
-    // Основний ефект для підписки на події
     useEffect(() => {
-        // Telegram події
-        const handleTelegramClose = () => {
-            console.log("Telegram WebApp закривається!");
-            sendLogoutData();
-        };
+        const syncInterval = setInterval(() => {
+            syncUserData();
+        }, 10000); // кожні 10 сек
 
-        tg.onEvent('viewportChanged', (e:any) => {
-            if (e.is_state_stable === false) {
-                handleTelegramClose();
-            }
-        });
-
-        // Стандартні браузерні події
-        window.addEventListener('pagehide', sendLogoutData);
-        window.addEventListener('beforeunload', sendLogoutData);
-
-        // Додаткова перестраховка - інтервал для збереження даних
-        const saveInterval = setInterval(() => {
-            if (store.user?.telegramId) {
-                localStorage.setItem('last_activity', Date.now().toString());
-            }
-        }, 30000);
-
-        return () => {
-            tg.offEvent('viewportChanged');
-            window.removeEventListener('pagehide', sendLogoutData);
-            window.removeEventListener('beforeunload', sendLogoutData);
-            clearInterval(saveInterval);
-        };
-    }, [sendLogoutData, tg]);
+        return () => clearInterval(syncInterval);
+    }, [syncUserData]);
 
     // Ініціалізація Telegram
     useTelegramInit();
