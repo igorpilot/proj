@@ -19,31 +19,21 @@ const App = observer(() => {
     const { store } = useContext(Context);
     const tg = window.Telegram.WebApp as any;
 
-    const syncUserData = useCallback(async () => {
-        if (!store.user?.telegramId) return;
-
-        try {
-            await fetch(`${API_URL}/logout`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    userInfo: store.user
-                }),
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            console.log("✅ Баланс синхронізовано");
-        } catch (error) {
-            console.error("❌ Помилка синхронізації:", error);
-        }
-    }, [store.user]);
-
     useEffect(() => {
         const syncInterval = setInterval(() => {
-            syncUserData();
-        }, 10000); // кожні 10 сек
+            if (store.user?.telegramId) {
+                fetch(`${API_URL}/logout`, {
+                    method: 'POST',
+                    body: JSON.stringify({ userInfo: store.user }),
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                    .then(() => console.log("✅ Баланс синхронізовано"))
+                    .catch(err => console.error("❌ Помилка синхронізації:", err));
+            }
+        }, 10000);
 
         return () => clearInterval(syncInterval);
-    }, [syncUserData]);
+    }, []);
 
     // Ініціалізація Telegram
     useTelegramInit();
