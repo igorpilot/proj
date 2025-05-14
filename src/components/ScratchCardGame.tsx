@@ -90,7 +90,19 @@ export const ScratchCardGame: React.FC<ScratchCardProps> = ({
             setImageLoaded(true);
         };
     }, [coverImage]);
+    useEffect(() => {
+        const preventTouchScroll = (e: TouchEvent) => {
+            if (isDrawing) {
+                e.preventDefault();
+            }
+        };
 
+        document.addEventListener("touchmove", preventTouchScroll, { passive: false });
+
+        return () => {
+            document.removeEventListener("touchmove", preventTouchScroll);
+        };
+    }, [isDrawing]);
     return (
         <div className="relative w-full h-full flex flex-col px-4 py-6">
             {/* Заголовок з виграшними числами */}
@@ -131,7 +143,7 @@ export const ScratchCardGame: React.FC<ScratchCardProps> = ({
                     ref={canvasRef}
                     width={window.innerWidth}
                     height={window.innerHeight}
-                    className="absolute top-0 left-0 w-full h-full touch-none"
+                    className="absolute top-0 left-0 w-full h-full"
                     onMouseDown={handleStart}
                     onMouseUp={handleEnd}
                     onMouseMove={handleMove}

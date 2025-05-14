@@ -40,6 +40,7 @@ const App = observer(() => {
 
     useEffect(() => {
         tg.ready();
+        tg.expand();
         const userData = tg.initDataUnsafe?.user;
         const hash = tg.initData;
 
