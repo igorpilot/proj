@@ -20,9 +20,16 @@ export const ScratchCardGame: React.FC<ScratchCardProps> = ({
     const revealedRef = useRef(false);
     const [imageLoaded, setImageLoaded] = useState(false);
 
-    const handleStart = () => setIsDrawing(true);
-    const handleEnd = () => setIsDrawing(false);
-
+    const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
+        e.preventDefault(); // <-- обов'язково
+        setIsDrawing(true);
+        document.body.style.overflow = 'hidden'; // Заборона scroll
+    };
+    const handleEnd = (e: React.MouseEvent | React.TouchEvent) => {
+        e.preventDefault(); // <-- обов'язково
+        setIsDrawing(false);
+        document.body.style.overflow = ''; // Відновити scroll
+    };
     const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
         if (!isDrawing || !canvasRef.current) return;
 
@@ -124,7 +131,7 @@ export const ScratchCardGame: React.FC<ScratchCardProps> = ({
                     ref={canvasRef}
                     width={window.innerWidth}
                     height={window.innerHeight}
-                    className="absolute top-0 left-0 w-full h-full"
+                    className="absolute top-0 left-0 w-full h-full touch-none"
                     onMouseDown={handleStart}
                     onMouseUp={handleEnd}
                     onMouseMove={handleMove}
