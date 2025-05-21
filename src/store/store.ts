@@ -1,10 +1,11 @@
-import {makeAutoObservable, runInAction} from "mobx";
+import {makeAutoObservable} from "mobx";
 import axios from "axios";
 import {IUser} from "../models/IUser";
 
 
-export const API_URL = 'https://telegramback-4wjh.onrender.com/api'
-//http://localhost:5000/api
+export const API_URL = "http://localhost:5000/api"
+    //'https://telegramback-4wjh.onrender.com/api'
+
 export default class Store {
     user = {} as IUser;
     isAuth = false;
@@ -15,8 +16,8 @@ export default class Store {
         makeAutoObservable(this);
     }
 
-    setUser(user: IUser) {
-        this.user = user;
+    setUser(user: Partial<IUser>) {
+        this.user = { ...this.user, ...user };
         this.isAuth = true;
     }
     setPassiveProfit(number: number) {
@@ -26,16 +27,11 @@ export default class Store {
     async authFromTelegram(telegramUser: any) {
         try {
             const res = await axios.post(`${API_URL}/telegram-auth`, telegramUser);
-
-            runInAction(() => {
                 this.setUser(res.data);
-            });
         } catch (e) {
             console.error("❌ Auth error:", e);
         } finally {
-            runInAction(() => {
-                this.isLoading = false;
-            });
+            this.isLoading = false;
         }
     }
     async claimCoins(userInfo:any) {
@@ -60,7 +56,7 @@ export default class Store {
         try {
             const res =await axios.post(`${API_URL}/collectPassiveIncome`, {userId});
             console.log("📥 Сервер повернув:", res.data);
-            this.setUser({...this.user, balance:res.data.balance});
+            this.setUser({ balance: res.data.balance });
             this.setPassiveProfit(res.data.passiveProfit);
         } catch (e) {
             console.error(e);

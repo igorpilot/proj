@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Home from './pages/Home';
 import Referral from './pages/Referral';
 import useTelegramInit from './hooks/useTelegramInit';
@@ -6,26 +6,27 @@ import {NavBar} from "./components/Navbar";
 import {Profile} from "./components/Profile";
 import {TasksList} from "./pages/TasksList";
 import {CardsList} from "./pages/CardsList";
-import {useCallback, useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {Context} from "./index";
 import {observer} from "mobx-react-lite";
 import {CollectPassiveCoins} from "./components/CollectPassiveCoins";
 import {API_URL} from "./store/store";
+import Loading from "./pages/Loading";
 
 
 const App = observer(() => {
     const [showOfflineReward, setShowOfflineReward] = useState(false);
     const [passiveIncome, setPassiveIncome] = useState(0);
-    const { store } = useContext(Context);
+    const {store} = useContext(Context);
     const tg = window.Telegram.WebApp as any;
 
     useEffect(() => {
         const syncInterval = setInterval(() => {
-            if (store.user?.telegramId) {
+            if (store.isAuth) {
                 fetch(`${API_URL}/logout`, {
                     method: 'POST',
-                    body: JSON.stringify({ userInfo: store.user }),
-                    headers: { 'Content-Type': 'application/json' }
+                    body: JSON.stringify({userInfo: store.user}),
+                    headers: {'Content-Type': 'application/json'}
                 })
                     .then(() => console.log("✅ Баланс синхронізовано"))
                     .catch(err => console.error("❌ Помилка синхронізації:", err));
@@ -35,16 +36,16 @@ const App = observer(() => {
         return () => clearInterval(syncInterval);
     }, []);
 
-    // Ініціалізація Telegram
     useTelegramInit();
 
     useEffect(() => {
         tg.ready();
         tg.expand();
-        const userData = tg.initDataUnsafe?.user;
+        const userData = tg.initDataUnsafe.user;
         const hash = tg.initData;
 
-        if (userData && hash) {
+//if (userData && hash) {
+        if (userData) {
             store.authFromTelegram({
                 id: userData.id,
                 first_name: userData.first_name,
@@ -55,13 +56,13 @@ const App = observer(() => {
             });
         } else {
             console.warn("⚠️ Дані користувача Telegram не знайдено");
-            store.isLoading = false;
         }
+
     }, []);
 
     // Інші ефекти залишаємо без змін
     useEffect(() => {
-        if (store.isAuth) {
+        if (store.isAuth && store.user.telegramId) {
             const fetchPassiveIncome = async () => {
                 await store.collectPassiveIncome(store.user.telegramId);
                 if (store.passiveProfit > 0) {
@@ -74,20 +75,22 @@ const App = observer(() => {
     }, [store.isAuth]);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            store.setUser({
-                ...store.user,
-                balance: parseFloat((store.user.balance + store.user.hourlyProfit / 360).toFixed(2))
-            });
-        }, 1000);
-        return () => clearInterval(interval);
+        if (store.isAuth) {
+            const interval = setInterval(() => {
+                store.setUser({
+                    ...store.user,
+                    balance: parseFloat((store.user.balance + store.user.hourlyProfit / 360).toFixed(2))
+                });
+            }, 1000);
+            return () => clearInterval(interval);
+        }
     }, []);
 
-    if (store.isLoading) return <div>Loading...</div>;
+    if (store.isLoading) return <Loading/>;
     if (!store.isAuth) return <div>Not authenticated</div>;
-
     return (<Router>
-            {showOfflineReward && <CollectPassiveCoins passiveIncome={passiveIncome} setShowOfflineReward={setShowOfflineReward}/>}
+            {showOfflineReward &&
+                <CollectPassiveCoins passiveIncome={passiveIncome} setShowOfflineReward={setShowOfflineReward}/>}
             <div className="flex flex-col h-screen ">
                 <div className="shrink-0">
                     <Profile/>

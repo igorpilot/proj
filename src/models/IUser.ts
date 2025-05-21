@@ -8,6 +8,7 @@ export interface IUser {
     balance: number
     hourlyProfit: number
     usdt: number
+    friends: string[]
     level: number
     lastActiveAt: any
     lastClaim: any,
