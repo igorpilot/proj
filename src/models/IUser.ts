@@ -14,6 +14,7 @@ export interface IUser {
     lastClaim: any,
     lastDailyReward: any
     history: any[]
+    referralFrom: string | null
     createdAt: any
     updatedAt:any
 }
