@@ -69,33 +69,60 @@ export const CoinRewardButton = observer(() => {
     }, [isClaimed]);
 
     return (
-        <div className="flex flex-col items-center justify-center gap-1">
-            <div className="text-yellow-300 text-xl font-bold flex items-center gap-2">
-                <MonetizationOnIcon className="text-4xl" />
-                <span>{user.balance} coins</span>
+        <div className="flex flex-col items-center justify-center gap-2">
+            <div className="flex items-center gap-3 bg-black/20 rounded-full px-4 py-2 border border-white/10">
+                <div className="text-yellow-300 text-xl">💰</div>
+                <div className="text-center">
+                    <div className="text-xs text-white/70">Ваш баланс</div>
+                    <div className="font-bold text-xl text-yellow-300">{user.balance}</div>
+                </div>
             </div>
 
             <motion.div
                 onClick={canClaim ? claimCoins : undefined}
-                whileTap={{ scale: canClaim ? 0.95 : 1 }}
-                className={`relative w-64 h-64 cursor-pointer transition-all ${
-                    !canClaim ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                whileHover={canClaim ? { scale: 1.05 } : {}}
+                whileTap={canClaim ? { scale: 0.95 } : {}}
+                className={`relative ${!canClaim ? "opacity-70 cursor-not-allowed" : "cursor-pointer"}`}
             >
-                <img
-                    src="/coin.png"
-                    alt="Coin Button"
-                    className="w-full h-full object-contain"
-                    style={{ filter: canClaim ? "none" : "grayscale(100%)" }}
-                />
-                <div className="absolute inset-0 flex items-center justify-center text-yellow-200 font-bold text-2xl pointer-events-none">
-                    {canClaim ? "+100" : formatTime(timeLeft)}
+                <motion.div
+                    animate={canClaim ? {
+                        rotate: [0, 5, -5, 0],
+                        y: [0, -5, 0]
+                    } : {}}
+                    transition={canClaim ? {
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        duration: 3
+                    } : {}}
+                >
+                    <img
+                        src="/coin.png"
+                        alt="Coin Button"
+                        className="w-48 h-48 drop-shadow-lg"
+                        style={{ filter: canClaim ? "drop-shadow(0 0 12px rgba(255, 215, 0, 0.6))" : "grayscale(60%)" }}
+                    />
+                </motion.div>
+
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 pointer-events-none">
+                    <div className={`text-2xl font-bold ${canClaim ? "text-yellow-300" : "text-white/70"}`}>
+                        {canClaim ? "+100" : formatTime(timeLeft)}
+                    </div>
+                    {isClaimed && (
+                        <motion.div
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            className="text-green-300 font-bold text-lg"
+                        >
+                            +100 🎉
+                        </motion.div>
+                    )}
                 </div>
             </motion.div>
 
-            <p className="text-yellow-300 text-sm text-center">
-                {canClaim ? "Натисни, щоб отримати 100 монет!" : "Зачекай поки згенеруються монети"}
-            </p>
+            {canClaim && <div className={`text-center px-4 py-2 rounded-full ${canClaim ? "bg-yellow-500/10 text-yellow-300" : "bg-white/5 text-white/60"} text-sm font-medium`}>
+                 Натисніть, щоб отримати монети!
+            </div>}
         </div>
     );
 });

@@ -72,7 +72,7 @@ export const lotteries = [
 
 export const CardsList:FC=()=>{
     const [selected, setSelected] = useState<null | typeof lotteries[0]>(null);
-    return (<div className="bg-gradient-to-b from-pink-900 to-pink-950 min-h-screen p-2 pb-20">
+    return (<div className="bg-gradient-to-b from-pink-900 to-purple-900 min-h-screen p-2 pb-20">
         <div className="grid grid-cols-2 gap-1">
             {lotteries.sort((a, b) => a.cost - b.cost).map((lottery) => (
                 <div key={lottery.id} onClick={() => setSelected(lottery)}>

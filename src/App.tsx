@@ -19,34 +19,27 @@ const App = observer(() => {
     const [passiveIncome, setPassiveIncome] = useState(0);
     const {store} = useContext(Context);
     const tg = window.Telegram.WebApp as any;
-
-    useEffect(() => {
-        const syncInterval = setInterval(() => {
-            if (store.isAuth) {
-                fetch(`${API_URL}/logout`, {
-                    method: 'POST',
-                    body: JSON.stringify({userInfo: store.user}),
-                    headers: {'Content-Type': 'application/json'}
-                })
-                    .then(() => console.log("✅ Баланс синхронізовано"))
-                    .catch(err => console.error("❌ Помилка синхронізації:", err));
-            }
-        }, 10000);
-
-        return () => clearInterval(syncInterval);
-    }, []);
+    const [initError, setInitError] = useState<string | null>(null);
 
     useTelegramInit();
 
     useEffect(() => {
+        if (!tg) {
+            setInitError("Telegram WebApp not available");
+            store.isLoading = false;
+            return;
+        }
+        const initApp = async () => {
+            try {
         tg.ready();
         tg.expand();
         const userData = tg.initDataUnsafe.user;
+
         const hash = tg.initData;
 
 //if (userData && hash) {
         if (userData) {
-            store.authFromTelegram({
+            await store.authFromTelegram({
                 id: userData.id,
                 first_name: userData.first_name,
                 last_name: userData.last_name,
@@ -57,7 +50,13 @@ const App = observer(() => {
         } else {
             console.warn("⚠️ Дані користувача Telegram не знайдено");
         }
+            } catch (e) {
+                console.error("Initialization error:", e);
+                setInitError("Failed to initialize");
+                store.isLoading = false;
+            }}
 
+            initApp();
     }, []);
 
     // Інші ефекти залишаємо без змін
@@ -73,7 +72,21 @@ const App = observer(() => {
             fetchPassiveIncome();
         }
     }, [store.isAuth]);
+    useEffect(() => {
+        const syncInterval = setInterval(() => {
+            if (store.isAuth) {
+                fetch(`${API_URL}/logout`, {
+                    method: 'POST',
+                    body: JSON.stringify({userInfo: store.user}),
+                    headers: {'Content-Type': 'application/json'}
+                })
+                    .then(() => console.log("✅ Баланс синхронізовано"))
+                    .catch(err => console.error("❌ Помилка синхронізації:", err));
+            }
+        }, 10000);
 
+        return () => clearInterval(syncInterval);
+    }, []);
     useEffect(() => {
         if (store.isAuth) {
             const interval = setInterval(() => {
@@ -85,7 +98,9 @@ const App = observer(() => {
             return () => clearInterval(interval);
         }
     }, []);
-
+    if (initError) {
+        return <div className="p-4 text-red-500 text-center">{initError}</div>;
+    }
     if (store.isLoading) return <Loading/>;
     if (!store.isAuth) return <div>Not authenticated</div>;
     return (<Router>

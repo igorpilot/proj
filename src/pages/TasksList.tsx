@@ -25,7 +25,7 @@ const mockTasks = [
 ];
 export const TasksList: FC = () => {
     return (
-        <div className="min-h-screen bg-gradient-to-b from-pink-900 to-pink-950 p-6">
+        <div className="min-h-screen bg-gradient-to-b from-pink-900 to-purple-900 p-6">
             <h2 className="text-white text-2xl font-bold mb-6 text-center">🧩Tasks</h2>
             <div className="flex flex-col gap-4">
                 {mockTasks.map((task) => (
