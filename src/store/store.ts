@@ -3,7 +3,7 @@ import axios from "axios";
 import {IUser} from "../models/IUser";
 
 
-export const API_URL = 'https://telegramback-4wjh.onrender.com/api'
+export const API_URL = 'http://localhost:5000/api'
 //"http://localhost:5000/api"
 //'https://telegramback-4wjh.onrender.com/api'
 
@@ -33,6 +33,7 @@ export default class Store {
         try {
             const res = await axios.post(`${API_URL}/telegram-auth`, telegramUser);
                 this.setUser(res.data);
+                this.getFriends(res.data.telegramId);
         } catch (e) {
             console.error("❌ Auth error:", e);
         } finally {

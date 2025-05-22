@@ -35,8 +35,8 @@ export const FriendCard: FC<FriendCardProps> = ({friend, index}) => {
                 <p className="text-xs opacity-70">Зареєстрований: {new Date(friend.createdAt).toLocaleDateString()}</p>
             </div>
             <div className="text-right">
-                <p className="text-sm font-bold text-yellow-300">{friend.balance}</p>
-                <p className="text-xs">монет</p>
+                <p className="text-sm font-bold text-yellow-300">{friend.hourlyProfit}</p>
+                <p className="text-xs">/hr</p>
             </div>
         </div>
 )

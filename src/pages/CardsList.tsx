@@ -11,7 +11,7 @@ export const lotteries = [
         rules: 'Сотри одне з трьох полів. Якщо в тебе випаде "💰", отримуєш від 100 до 1000 монет.',
         cost: 500,
         hourlyProfit: 50,
-        rewardRange: [100, 1000],
+        rewardRange: [100, 5000],
         numberCount: 3,
         chance: 0.5
     },
@@ -24,7 +24,7 @@ export const lotteries = [
         rules: 'Сотри одне поле. Якщо випаде "🍀", отримаєш випадкову нагороду від 20 до 200 монет.',
         cost: 200,
         hourlyProfit: 20,
-        rewardRange: [20, 200],
+        rewardRange: [20, 500],
         numberCount: 4,
         chance: 0.2
     },
@@ -37,7 +37,7 @@ export const lotteries = [
         rules: 'Оберни колесо — і отримай монети, токени або навіть унікальні предмети.',
         cost: 10000,
         hourlyProfit: 100,
-        rewardRange: [50, 500],
+        rewardRange: [50, 100000],
         numberCount: 4,
         chance: 0.6,
         rarePrizes: ['🚀 Boost x2', '🪐 Premium Ticket']
@@ -51,7 +51,7 @@ export const lotteries = [
         rules: 'Обери 3 з 6 фруктів. Якщо всі однакові — отримаєш супернагороду!',
         cost: 300,
         hourlyProfit: 30,
-        rewardRange: [50, 300],
+        rewardRange: [50, 1000],
         numberCount: 6,
         chance: 0.3
     },
@@ -64,7 +64,7 @@ export const lotteries = [
         rules: 'Купи коробку — відкрий. Може бути великий виграш або порожня коробка.',
         cost: 400,
         hourlyProfit: 40,
-        rewardRange: [0, 500],
+        rewardRange: [0, 1500],
         numberCount: 8,
         chance: 0.4
     }

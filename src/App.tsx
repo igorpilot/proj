@@ -34,7 +34,7 @@ const App = observer(() => {
         tg.ready();
         tg.expand();
         const userData = tg.initDataUnsafe.user;
-
+        console.log(userData);
         const hash = tg.initData;
 
 //if (userData && hash) {

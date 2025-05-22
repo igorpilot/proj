@@ -36,7 +36,10 @@ export default function Referral() {
         }
     };
     useEffect(() => {
-        store.getFriends(store.user.telegramId)
+        const fetchfriends = async() =>{
+            await store.getFriends(store.user.telegramId)
+        }
+        fetchfriends()
     }, []);
     return (
         <div className="min-h-screen bg-gradient-to-b from-pink-900 to-purple-900 p-2 text-white">
