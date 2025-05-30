@@ -4,66 +4,70 @@ import {Context} from "../index";
 
 interface LotteryCardProps {
     lottery:any
-    maxWin: number;
     onWin?: (amount: number) => void;
 }
 
 export const LotteryGame: FC<LotteryCardProps> = ({ lottery, onWin }) => {
-    const {store}= useContext(Context)
+    const { store } = useContext(Context);
     const [revealed, setRevealed] = useState(false);
-    const [result, setResult] = useState<number | null>(null);
+    const [result, setResult] = useState<number | string | null>(null);
     const [generatedNumbers, setGeneratedNumbers] = useState<number[]>([]);
     const [winNumbers, setWinNumbers] = useState<number[]>([]);
 
     useEffect(() => {
         const totalNumbers = lottery.numberCount;
-        const winCount = Math.max(1, Math.floor(Math.random() * 3) + 1); // завжди є 1–3 виграшних числа
+        const winCount = Math.max(1, Math.floor(Math.random() * 3) + 1); // 1–3 winning numbers
 
-        // 1. Генеруємо унікальні виграшні числа
-        const winNumbersSet = new Set<number>();
-        while (winNumbersSet.size < winCount) {
-            winNumbersSet.add(Math.floor(Math.random() * 90) + 10);
+        // Генерація виграшних чисел
+        const winSet = new Set<number>();
+        while (winSet.size < winCount) {
+            winSet.add(Math.floor(Math.random() * 90) + 10);
         }
-        const winNumbersArr = Array.from(winNumbersSet);
+        const winArr = Array.from(winSet);
 
-        // 2. Визначаємо, чи гравець виграє (чи хоч одне виграшне число потрапить у заховані)
-        const isWinning = Math.random() < lottery.chance;
+        const isWinning = Math.random() >= lottery.failChance;
 
-        // 3. Генеруємо заховані числа
         const generatedSet = new Set<number>();
         if (isWinning) {
-            // Вставляємо випадкове виграшне число
-            const winningNumber = winNumbersArr[Math.floor(Math.random() * winNumbersArr.length)];
-            generatedSet.add(winningNumber);
+            // Додаємо одне з виграшних чисел
+            generatedSet.add(winArr[Math.floor(Math.random() * winArr.length)]);
         }
 
-        // Додаємо випадкові числа до потрібної кількості
         while (generatedSet.size < totalNumbers) {
-            const num = Math.floor(Math.random() * 90) + 10;
-            generatedSet.add(num);
+            const n = Math.floor(Math.random() * 90) + 10;
+            generatedSet.add(n);
         }
 
-        const generated = Array.from(generatedSet).sort(() => Math.random() - 0.5); // трохи перемішуємо
+        const generated = Array.from(generatedSet).sort(() => Math.random() - 0.5);
 
         setGeneratedNumbers(generated);
-        setWinNumbers(winNumbersArr);
+        setWinNumbers(winArr);
     }, [lottery]);
 
-
     const handleReveal = () => {
-        const isWinner = generatedNumbers.some(num => winNumbers.includes(num)); // перевіряємо збіг
+        const isWinner = generatedNumbers.some(num => winNumbers.includes(num));
 
-        const reward = isWinner
-            ? Math.floor(Math.random() * (lottery.rewardRange[1] - lottery.rewardRange[0] + 1)) + lottery.rewardRange[0]
-            : 0;
+        let reward = 0;
+
+        if (isWinner) {
+            const roll = Math.random();
+            let acc = 0;
+            for (const tier of lottery.rewardTiers) {
+                acc += tier.chance;
+                if (roll <= acc) {
+                    reward = tier.amount ?? tier.item ?? 0;
+                    break;
+                }
+            }
+
+                store.setUser({
+                    ...store.user,
+                    balance: store.user.balance + reward,
+                });
+
+        }
 
         setResult(reward);
-        if (reward > 0) {
-            store.setUser({
-                ...store.user,
-                balance: store.user.balance + reward,
-            });
-        }
         onWin?.(reward);
         setRevealed(true);
     };
@@ -79,10 +83,12 @@ export const LotteryGame: FC<LotteryCardProps> = ({ lottery, onWin }) => {
                 />
             ) : (
                 <div className="text-center w-full max-w-md p-6 bg-yellow-300 rounded-2xl shadow text-black">
-                    {result && result > 0 ? (
+                    {result && result !== 0 ? (
                         <>
                             <div className="text-2xl mb-2">🏆 Вітаємо!</div>
-                            <div className="text-4xl font-bold text-green-700">+{result} монет</div>
+                            <div className="text-4xl font-bold text-green-700">
+                                {typeof result === "number" ? `+${result} монет` : `🎁 ${result}`}
+                            </div>
                         </>
                     ) : (
                         <>

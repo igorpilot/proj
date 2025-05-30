@@ -75,11 +75,7 @@ const App = observer(() => {
     useEffect(() => {
         const syncInterval = setInterval(() => {
             if (store.isAuth) {
-                fetch(`${API_URL}/logout`, {
-                    method: 'POST',
-                    body: JSON.stringify({userInfo: store.user}),
-                    headers: {'Content-Type': 'application/json'}
-                })
+                store.updateUser(store.user)
                     .then(() => console.log("✅ Баланс синхронізовано"))
                     .catch(err => console.error("❌ Помилка синхронізації:", err));
             }
@@ -88,15 +84,15 @@ const App = observer(() => {
         return () => clearInterval(syncInterval);
     }, []);
     useEffect(() => {
-        if (store.isAuth) {
             const interval = setInterval(() => {
+                if (store.isAuth) {
                 store.setUser({
                     ...store.user,
-                    balance: parseFloat((store.user.balance + store.user.hourlyProfit / 360).toFixed(2))
-                });
+                    balance: parseFloat((store.user.balance + store.user.hourlyProfit / 3600).toFixed(2))
+                }); }
             }, 1000);
             return () => clearInterval(interval);
-        }
+
     }, []);
     if (initError) {
         return <div className="p-4 text-red-500 text-center">{initError}</div>;

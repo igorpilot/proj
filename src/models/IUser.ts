@@ -9,8 +9,12 @@ export interface IUser {
     hourlyProfit: number
     usdt: number
     friends: string[]
+    completedTasks: string[]
     level: number
     lastActiveAt: any
+    consecutiveLoginDays: number
+    ticketsUsedToday: number
+    lastTicketUseDate: any
     lastClaim: any,
     lastDailyReward: any
     history: any[]

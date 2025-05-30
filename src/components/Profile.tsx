@@ -21,6 +21,7 @@ export const Profile: FC = observer(() => {
                 </div>
             </div>
             <div className="text-right">
+                <p className="text-sm">💰 <span className="font-bold">{user.balance}</span> coins</p>
                 <p className="text-sm">💰 <span className="font-bold">{user.usdt}</span> USDT</p>
                 <p className="text-sm">⚡ +{user.hourlyProfit}/hr</p>
             </div>

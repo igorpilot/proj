@@ -126,7 +126,7 @@ export default function Referral() {
 
                     {store.friends?.length > 0 ? (
                         <div className="space-y-3">
-                            {store.friends.map((friend, index) => <FriendCard friend={friend} index={index}/>)}
+                            {store.friends.map((friend, index) => <FriendCard key={index} friend={friend} index={index}/>)}
                         </div>
                     ) : <FriendEmpty/>}
                 </div>
