@@ -339,7 +339,9 @@ export const CardsList: FC = () => {
         if (savedType === "received") {
             const counts: Record<string, { count: number; from: string }> = {};
 
-            store.user.lotteries.received.forEach((entry: { id: string; from: string }) => {
+            const unUsed = store.user.lotteries.received.filter((entry: any) => !entry.used);
+
+            unUsed.forEach((entry: { id: string; from: string }) => {
                 const key = JSON.stringify({ id: entry.id, from: entry.from });
                 if (!counts[key]) {
                     counts[key] = { count: 1, from: entry.from };
@@ -361,7 +363,7 @@ export const CardsList: FC = () => {
     };
 
     const purchasedCount = store.user?.lotteries.purchased.length || 0;
-    const receivedCount = store.user?.lotteries.received.length || 0;
+    const receivedCount = store.user?.lotteries.received.filter(c=>c.used === false).length || 0;
     const totalSaved = purchasedCount + receivedCount;
 
     const filtered =

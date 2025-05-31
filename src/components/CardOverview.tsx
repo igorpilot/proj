@@ -4,6 +4,7 @@ import {LotteryGame} from "./LotteryGame";
 import {Context} from "../index";
 import {NotEnoughMoneyModal} from "./NotEnoughMoneyModal";
 import {ConfirmLotteryModal} from "./ConfirmLotteryModal";
+import {v1} from "uuid";
 
 type Props = {
     lottery: any;
@@ -40,7 +41,7 @@ export const CardOverview: FC<Props> = ({ lottery, onClose }) => {
         }
     };
     const handlerSendFriend = async ()=>{
-        const referralLink = `https://t.me/JetTicketBot?start=gift_lottery-${store.user.telegramId}-${lottery.id}`
+        const referralLink = `https://t.me/JetTicketBot?start=gift_lottery-${store.user.telegramId}-${v1()}-${lottery.id}`
         const tg = window.Telegram?.WebApp as any;
         try {
             if(lottery.origin !== "purchased") {

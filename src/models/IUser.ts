@@ -28,6 +28,8 @@ export interface IUser {
             id: string;
             from: string;
             date: Date;
+            giftId: string,
+            used: boolean
         }[]
     }
 }
