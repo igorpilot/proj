@@ -6,7 +6,7 @@ import {Context} from "../index";
 
 export const lotteries = [
     {
-        id: 'gold-rush',
+        id: 'goldRush',
         type: 'coin',
         name: '💰 Gold Rush',
         description: 'Спробуй свою удачу у золотій лихоманці!',
@@ -26,7 +26,7 @@ export const lotteries = [
         ]
     },
     {
-        id: 'lucky-clover',
+        id: 'luckyClover',
         name: '🍀 Lucky Clover',
         description: 'Класична лотерея з веселим дизайном. Більше шансів на виграш!',
         image: '/luckyClover.png',
@@ -46,7 +46,7 @@ export const lotteries = [
         ]
     },
     {
-        id: 'cosmic-spin',
+        id: 'cosmicSpin',
         name: '🌌 Cosmic Spin',
         description: 'Галактична лотерея для справжніх мрійників.',
         image: '/cosmicSpin.png',
@@ -67,7 +67,7 @@ export const lotteries = [
         ]
     },
     {
-        id: 'fruit-jackpot',
+        id: 'fruitJackpot',
         name: '🍓 Fruit Jackpot',
         description: 'Фруктовий рай! Якщо випаде три однакові фрукти — ти виграв!',
         image: '/fruitJackpot.png',
@@ -87,7 +87,7 @@ export const lotteries = [
         ]
     },
     {
-        id: 'mystery-box',
+        id: 'mysteryBox',
         name: '🎁 Mystery Box',
         description: 'Ніхто не знає, що всередині... Подарунок або нічого?',
         image: '/mysteryBox.png',
@@ -107,7 +107,7 @@ export const lotteries = [
         ]
     },
     {
-        id: 'crypto-ice',
+        id: 'cryptoIce',
         type: 'usdt',
         name: '🧊 Crypto Ice',
         description: 'Заморожений виграш чекає тебе. Розбий лід!',
@@ -127,7 +127,7 @@ export const lotteries = [
         ]
     },
     {
-        id: 'stellar-fortune',
+        id: 'stellarFortune',
         type: 'usdt',
         name: '🌌 Stellar Fortune',
         description: 'Зітри зірку — може, саме ця зірка принесе тобі щастя!',
@@ -147,7 +147,7 @@ export const lotteries = [
         ]
     },
     {
-        id: 'usdt-inferno',
+        id: 'usdtInferno',
         type: 'usdt',
         name: '🔥 USDT Inferno',
         description: 'Гаряча лотерея з палаючим шансом виграти великий куш!',
@@ -167,7 +167,7 @@ export const lotteries = [
         ]
     },
     {
-        id: 'red-envelope',
+        id: 'redEnvelope',
         type: 'usdt',
         name: '🧧 Red Envelope',
         description: 'Китайська традиція з сюрпризом. Але не всі конверти виграшні!',
@@ -187,7 +187,7 @@ export const lotteries = [
         ]
     },
     {
-        id: 'diamond-vault',
+        id: 'diamondVault',
         type: 'usdt',
         name: '💎 Diamond Vault',
         description: 'Секретний сейф із багатством. Але лише один із ключів справжній!',
@@ -207,7 +207,7 @@ export const lotteries = [
         ]
     },
     {
-        id: 'birthday-blast',
+        id: 'birthdayBlast',
         type: 'gift',
         name: '🎂 Birthday Blast',
         description: 'Сюрприз до дня народження! Подаруй друзям шанс зірвати куш 🎉',
@@ -227,7 +227,7 @@ export const lotteries = [
         ]
     },
     {
-        id: 'secret-surprise',
+        id: 'secretSurprise',
         type: 'gift',
         name: '🎁 Secret Surprise',
         description: 'Несподіванка для друга — відкрий та дізнайся, що всередині!',
@@ -247,7 +247,7 @@ export const lotteries = [
         ]
     },
     {
-        id: 'friendly-flame',
+        id: 'friendlyFlame',
         type: 'gift',
         name: '🔥 Friendly Flame',
         description: 'Запали емоції! Надішли лотерею тому, хто заслуговує на удачу!',
@@ -267,7 +267,7 @@ export const lotteries = [
         ]
     },
     {
-        id: 'just-because',
+        id: 'justBecause',
         type: 'gift',
         name: '🌈 Just Because',
         description: 'Без причини — просто подарунок. Бо іноді так треба 💛',
@@ -287,7 +287,7 @@ export const lotteries = [
         ]
     },
     {
-        id: 'thanks-card',
+        id: 'thanksCard',
         type: 'gift',
         name: '💌 Thanks Card',
         description: 'Хочеш подякувати комусь особливому? Зроби це через лотерею 🙌',
