@@ -3,30 +3,70 @@ import {motion, AnimatePresence} from "framer-motion";
 import {LotteryGame} from "./LotteryGame";
 import {Context} from "../index";
 import {NotEnoughMoneyModal} from "./NotEnoughMoneyModal";
+import {ConfirmLotteryModal} from "./ConfirmLotteryModal";
 
 type Props = {
     lottery: any;
     onClose: () => void;
 };
 
+
+
 export const CardOverview: FC<Props> = ({ lottery, onClose }) => {
     const { store } = useContext(Context);
     const [showGame, setShowGame] = useState(false);
     const [notMoney, setNotMoney] = useState(false);
-
+    const [confirmMode, setConfirmMode] = useState(false);
+    const startGame =async ()=>{
+        await store.ticketUsed(lottery)
+            .then(()=>setShowGame(true))
+    }
     const buyHandler = async () => {
         if (store.user.balance >= lottery.cost) {
-            try {
-                await store.useTicket(lottery).then(() => setShowGame(true));
-            } catch (e) {
-                console.error("Ticket use error", e);
-            }
+            setConfirmMode(true);
         } else {
             setNotMoney(true);
         }
     };
 
-    // Нові обчислення
+    const handlePlayOrSave = async (action: "play" | "save") => {
+        try {
+            await store.ticketUse(lottery, action);
+            if (action === "play") setShowGame(true);
+            else onClose();
+            setConfirmMode(false)
+        } catch (e) {
+            console.error("Ticket save error", e);
+        }
+    };
+    const handlerSendFriend = async ()=>{
+        const referralLink = `https://t.me/JetTicketBot?start=gift_lottery-${store.user.telegramId}-${lottery.id}`
+        const tg = window.Telegram?.WebApp as any;
+        try {
+            if(lottery.origin !== "purchased") {
+                await store.ticketUse(lottery, "save");
+            }
+            if (tg?.initData && tg?.shareLink) {
+                tg.shareLink(
+                    referralLink,
+                    `🎟 Я дарую тобі лотерейку в JetTicket! Натисни та вигравай 🎁`
+                );
+            } else if (navigator.share) {
+                await navigator.share({
+                    title: "JetTicket 🎮",
+                    text: "🔥 Я дарую тобі лотерейку в JetTicket! Натисни та грай:",
+                    url: referralLink,
+                });
+            } else {
+                await navigator.clipboard.writeText(referralLink);
+                alert("Посилання скопійовано 📋");
+            }
+        } catch (error) {
+            console.error("Помилка поширення:", error);
+        } finally {
+
+        }
+    }
     const numericTiers = lottery.rewardTiers.filter((t:any) => typeof t.amount === "number");
     const minReward = Math.min(...numericTiers.map((t:any) => t.amount!));
     const maxReward = Math.max(...numericTiers.map((t:any) => t.amount!));
@@ -35,6 +75,13 @@ export const CardOverview: FC<Props> = ({ lottery, onClose }) => {
         <>
             <AnimatePresence>
                 {notMoney && <NotEnoughMoneyModal onClose={() => setNotMoney(false)} />}
+                {confirmMode && (
+                    <ConfirmLotteryModal
+                        onClose={() => setConfirmMode(false)}
+                        onPlay={() => handlePlayOrSave("play")}
+                        onSave={() => handlePlayOrSave("save")}
+                    />
+                )}
             </AnimatePresence>
 
             <AnimatePresence>
@@ -75,26 +122,61 @@ export const CardOverview: FC<Props> = ({ lottery, onClose }) => {
                                     {lottery.description}
                                 </p>
                                 <p className="text-sm mb-2">
-                                    🎟️ Вартість участі: <strong>{lottery.cost} монет</strong>
+                                    🎟️ Вартість
+                                    участі: <strong>{lottery.cost} {lottery.type === "coin" ? 'coins' : "usdt"}</strong>
                                 </p>
                                 <p className="text-sm mb-2">
                                     + <strong>{lottery.hourlyProfit} монет за годину</strong>
                                 </p>
                                 <p className="text-sm mb-2">
-                                    🏆 Можна виграти: <strong>{minReward}–{maxReward} монет</strong>
+                                    🏆 Можна
+                                    виграти: <strong>{minReward}–{maxReward} {lottery.type === "coin" ? 'coins' : "usdt"}</strong>
                                 </p>
                                 <p className="text-sm mb-4">📜 Правила: {lottery.rules}</p>
 
                                 <div className="flex justify-around gap-2 mt-6">
-                                    <button
-                                        className="bg-green-500 px-4 py-2 rounded-xl hover:bg-green-600 transition"
-                                        onClick={buyHandler}
-                                    >
-                                        Купити
-                                    </button>
-                                    <button className="bg-blue-500 px-4 py-2 rounded-xl hover:bg-blue-600 transition">
-                                        Подарувати другу
-                                    </button>
+                                    {lottery.origin === "purchased" && (
+                                        <>
+                                            <button
+                                                className="bg-green-500 px-4 py-2 rounded-xl hover:bg-green-600 transition"
+                                                onClick={startGame}
+                                            >
+                                                🎮 Грати зараз
+                                            </button>
+                                            <button
+                                                className="bg-blue-500 px-4 py-2 rounded-xl hover:bg-blue-600 transition"
+                                                onClick={handlerSendFriend}
+                                            >
+                                                🎁 Подарувати другу
+                                            </button>
+                                        </>
+                                    )}
+
+                                    {lottery.origin === "received" && (
+                                        <button
+                                            className="bg-green-500 px-4 py-2 rounded-xl hover:bg-green-600 transition"
+                                            onClick={startGame}
+                                        >
+                                            🎮 Грати зараз
+                                        </button>
+                                    )}
+
+                                    {!lottery.origin && (
+                                        <>
+                                            <button
+                                                className="bg-green-500 px-4 py-2 rounded-xl hover:bg-green-600 transition"
+                                                onClick={buyHandler}
+                                            >
+                                                Купити
+                                            </button>
+                                            <button
+                                                className="bg-blue-500 px-4 py-2 rounded-xl hover:bg-blue-600 transition"
+                                                onClick={handlerSendFriend}
+                                            >
+                                                Подарувати другу
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
                             </>
                         )}

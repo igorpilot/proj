@@ -35,15 +35,17 @@ export const FriendCard: FC<FriendCardProps> = ({friend, index}) => {
                 <p className="text-xs opacity-70">Зареєстрований: {new Date(friend.createdAt).toLocaleDateString()}</p>
             </div>
             <div className="text-right">
-                <p className="text-sm font-bold text-yellow-300">{friend.hourlyProfit}</p>
-                <p className="text-xs">/hr</p>
+                <p className="text-sm font-bold text-yellow-300">Level: {friend.level}</p>
+                <p className="text-sm font-bold text-yellow-300">+{friend.hourlyProfit}/hr</p>
+
+
             </div>
         </div>
-)
+    )
 }
 export const FriendEmpty: FC = () => {
     return (
-<div className="text-center py-6 text-pink-300">
+        <div className="text-center py-6 text-pink-300">
     <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-3 opacity-50" fill="none"
          viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1}

@@ -25,7 +25,6 @@ export default function Referral() {
             }
         } catch (error) {
             console.error("Помилка поширення:", error);
-            // Fallback для старих браузерів
             const input = document.createElement('input');
             input.value = referralLink;
             document.body.appendChild(input);
@@ -42,7 +41,7 @@ export default function Referral() {
         fetchfriends()
     }, []);
     return (
-        <div className="min-h-screen bg-gradient-to-b from-pink-900 to-purple-900 p-2 text-white">
+        <div className="min-h-screen bg-gradient-to-b from-pink-900 to-purple-900 p-2 text-white pb-24">
             <div className="max-w-md mx-auto bg-pink-800/50 rounded-2xl p-2 shadow-xl backdrop-blur-sm">
                 <div className="text-center mb-3">
                     <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-yellow-300 to-pink-400 bg-clip-text text-transparent">
@@ -50,15 +49,18 @@ export default function Referral() {
                     </h2>
                     <div className="bg-pink-900/80 rounded-xl p-2">
                         <p className="text-lg font-semibold">Ви отримуєте за кожного друга:</p>
-                        <div className="flex justify-center gap-6 mt-2">
+                        <div className="flex justify-center gap-2 mt-2">
                             <div className="flex items-center">
-                                <span className="text-yellow-300 mr-1">+1000</span> монет
+                                <span className="text-yellow-300 mr-1">+{1000*store.user.level}</span> монет
                             </div>
                             <div className="flex items-center">
                                 <span className="text-yellow-300 mr-1">+1</span> USDT
                             </div>
                             <div className="flex items-center">
-                                <span className="text-yellow-300 mr-1">+50</span>/год
+                                <span className="text-yellow-300 mr-1">+{100*store.user.level}</span>/год
+                            </div>
+                            <div className="flex items-center">
+                                <span className="text-yellow-300 mr-1">+{100*store.user.level}</span>XP
                             </div>
                         </div>
                     </div>
@@ -71,14 +73,12 @@ export default function Referral() {
                             <div className="flex items-center">
                                 <span className="text-yellow-300 mr-1">5</span> USDT
                             </div>
+                            <div className="flex items-center">
+                                <span className="text-yellow-300 mr-1">+50</span>/год
+                            </div>
                         </div>
                     </div>
-                    {/*<div className="bg-pink-700/60 rounded-xl p-2">*/}
-                    {/*    <p className="text-sm">Друг отримує: <span className="font-bold">1000 монет + 5 USDT</span></p>*/}
-                    {/*</div>*/}
                 </div>
-
-                {/* Кнопка поширення */}
                 <button
                     onClick={handleShare}
                     className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] mb-2 flex items-center justify-center"
@@ -131,7 +131,7 @@ export default function Referral() {
                     ) : <FriendEmpty/>}
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 mt-6 mb-10 justify-center text-center">
+                <div className="grid grid-cols-2 gap-3 mt-6 justify-center text-center">
                     <div className="bg-pink-900/50 rounded-lg p-3">
                         <p className="text-sm opacity-80">Зароблено монет</p>
                         <p className="text-xl font-bold text-yellow-300">{(store.friends?.length * 1000) || 0}</p>

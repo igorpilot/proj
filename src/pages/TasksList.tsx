@@ -149,7 +149,6 @@ export const TasksList: FC = observer(() => {
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-pink-300">
                     🧩 Task Collection
                 </span>
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-pink-400 rounded-full opacity-70"></div>
             </h2>
 
             <div className={`transition-all duration-300 ${isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>

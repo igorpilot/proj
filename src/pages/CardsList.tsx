@@ -1,77 +1,13 @@
-import {FC, useState} from "react";
+import { Badge } from "../components/Badge";
+import {FC, useContext, useState} from "react";
 import {Card} from "../components/Card";
 import {CardOverview} from "../components/CardOverview";
-// export const lotteries = [
-//     {
-//         id: 'gold-rush',
-//         name: '💰 Gold Rush',
-//         description: 'Спробуй свою удачу у золотій лихоманці! Можеш виграти до 1000 монет за одне стирання.',
-//         image: '/goldRush.png',
-//         imageLogo: '/goldRush-logo.png',
-//         rules: 'Сотри одне з трьох полів. Якщо в тебе випаде "💰", отримуєш від 100 до 1000 монет.',
-//         cost: 500,
-//         hourlyProfit: 50,
-//         rewardRange: [100, 5000],
-//         numberCount: 3,
-//         chance: 0.5
-//     },
-//     {
-//         id: 'lucky-clover',
-//         name: '🍀 Lucky Clover',
-//         description: 'Класична лотерея з веселим дизайном. Більше шансів на виграш!',
-//         image: '/luckyClover.png',
-//         imageLogo: '/luckyClover-logo.png',
-//         rules: 'Сотри одне поле. Якщо випаде "🍀", отримаєш випадкову нагороду від 20 до 200 монет.',
-//         cost: 200,
-//         hourlyProfit: 20,
-//         rewardRange: [20, 500],
-//         numberCount: 4,
-//         chance: 0.2
-//     },
-//     {
-//         id: 'cosmic-spin',
-//         name: '🌌 Cosmic Spin',
-//         description: 'Галактична лотерея для справжніх мрійників. Можеш виграти рідкісні бонуси.',
-//         image: '/cosmicSpin.png',
-//         imageLogo: '/cosmicSpin-logo.png',
-//         rules: 'Оберни колесо — і отримай монети, токени або навіть унікальні предмети.',
-//         cost: 10000,
-//         hourlyProfit: 100,
-//         rewardRange: [50, 100000],
-//         numberCount: 4,
-//         chance: 0.6,
-//         rarePrizes: ['🚀 Boost x2', '🪐 Premium Ticket']
-//     },
-//     {
-//         id: 'fruit-jackpot',
-//         name: '🍓 Fruit Jackpot',
-//         description: 'Фруктовий рай! Якщо випаде три однакові фрукти — ти виграв!',
-//         image: '/fruitJackpot.png',
-//         imageLogo: '/fruitJackpot-logo.png',
-//         rules: 'Обери 3 з 6 фруктів. Якщо всі однакові — отримаєш супернагороду!',
-//         cost: 300,
-//         hourlyProfit: 30,
-//         rewardRange: [50, 1000],
-//         numberCount: 6,
-//         chance: 0.3
-//     },
-//     {
-//         id: 'mystery-box',
-//         name: '🎁 Mystery Box',
-//         description: 'Ніхто не знає, що всередині... Подарунок або нічого?',
-//         image: '/mysteryBox.png',
-//         imageLogo: '/mysteryBox-logo.png',
-//         rules: 'Купи коробку — відкрий. Може бути великий виграш або порожня коробка.',
-//         cost: 400,
-//         hourlyProfit: 40,
-//         rewardRange: [0, 1500],
-//         numberCount: 8,
-//         chance: 0.4
-//     }
-// ];
+import {Context} from "../index";
+
 export const lotteries = [
     {
         id: 'gold-rush',
+        type: 'coin',
         name: '💰 Gold Rush',
         description: 'Спробуй свою удачу у золотій лихоманці!',
         image: '/goldRush.png',
@@ -79,11 +15,10 @@ export const lotteries = [
         rules: 'Сотри одне з трьох полів. Якщо випаде "💰", отримуєш нагороду.',
         cost: 500,
         hourlyProfit: 50,
+        experience: 50,
         numberCount: 3,
-        type: 'scratch',
         failChance: 0.2,
         rewardTiers: [
-            { amount: 250, chance: 0.7 },
             { amount: 500, chance: 0.6 },
             { amount: 1000, chance: 0.5 },
             { amount: 2500, chance: 0.5 },
@@ -99,11 +34,11 @@ export const lotteries = [
         rules: 'Сотри одне поле. Якщо випаде "🍀", отримаєш нагороду.',
         cost: 200,
         hourlyProfit: 20,
+        experience: 20,
         numberCount: 4,
-        type: 'scratch',
+        type: 'coin',
         failChance: 0.3,
         rewardTiers: [
-            { amount: 100, chance: 0.7 },
             { amount: 200, chance: 0.6 },
             { amount: 500, chance: 0.5 },
             { amount: 1000, chance: 0.5 },
@@ -119,11 +54,11 @@ export const lotteries = [
         rules: 'Оберни колесо — і отримай монети, токени або навіть унікальні предмети.',
         cost: 10000,
         hourlyProfit: 100,
+        experience: 100,
         numberCount: 4,
-        type: 'spin',
+        type: 'coin',
         failChance: 0.25,
         rewardTiers: [
-            { amount: 5000, chance: 0.6 },
             { amount: 10000, chance: 0.5 },
             { amount: 25000, chance: 0.5 },
             { amount: 50000, chance: 0.5 },
@@ -140,11 +75,11 @@ export const lotteries = [
         rules: 'Обери 3 з 6 фруктів. Якщо всі однакові — отримаєш супернагороду!',
         cost: 300,
         hourlyProfit: 30,
+        experience: 30,
         numberCount: 6,
-        type: 'combo',
+        type: 'coin',
         failChance: 0.5,
         rewardTiers: [
-            { amount: 150, chance: 0.7 },
             { amount: 300, chance: 0.6 },
             { amount: 1000, chance: 0.5 },
             { amount: 1500, chance: 0.5 },
@@ -160,31 +95,357 @@ export const lotteries = [
         rules: 'Купи коробку — відкрий. Може бути великий виграш або порожня коробка.',
         cost: 400,
         hourlyProfit: 40,
+        experience: 40,
         numberCount: 8,
-        type: 'box',
+        type: 'coin',
         failChance: 0.4,
         rewardTiers: [
-            { amount: 200, chance: 0.7 },
             { amount: 400, chance: 0.6 },
             { amount: 1000, chance: 0.5 },
             { amount: 2000, chance: 0.5 },
             { amount: 4000, chance: 0.5 }
         ]
+    },
+    {
+        id: 'crypto-ice',
+        type: 'usdt',
+        name: '🧊 Crypto Ice',
+        description: 'Заморожений виграш чекає тебе. Розбий лід!',
+        image: '/cryptoIce.png',
+        imageLogo: '/cryptoIce-logo.png',
+        rules: 'Зітри кубики льоду',
+        cost: 5,
+        hourlyProfit: 50,
+        experience: 50,
+        numberCount: 4,
+        failChance: 0.3,
+        rewardTiers: [
+            { amount: 5, chance: 0.5 },
+            { amount: 10, chance: 0.4 },
+            { amount: 25, chance: 0.3 },
+            { amount: 100, chance: 0.1 }
+        ]
+    },
+    {
+        id: 'stellar-fortune',
+        type: 'usdt',
+        name: '🌌 Stellar Fortune',
+        description: 'Зітри зірку — може, саме ця зірка принесе тобі щастя!',
+        image: '/stellarFortune.png',
+        imageLogo: '/stellarFortune-logo.png',
+        rules: 'Зітри зірку. У ній може бути від 10 до 500 USDT!',
+        cost: 10,
+        hourlyProfit: 100,
+        experience: 100,
+        numberCount: 5,
+        failChance: 0.5,
+        rewardTiers: [
+            { amount: 10, chance: 0.4 },
+            { amount: 50, chance: 0.3 },
+            { amount: 200, chance: 0.2 },
+            { amount: 300, chance: 0.1 }
+        ]
+    },
+    {
+        id: 'usdt-inferno',
+        type: 'usdt',
+        name: '🔥 USDT Inferno',
+        description: 'Гаряча лотерея з палаючим шансом виграти великий куш!',
+        image: '/usdtInferno.png',
+        imageLogo: '/usdtInferno-logo.png',
+        rules: 'Зітри вогняні поля.',
+        cost: 20,
+        hourlyProfit: 200,
+        experience: 200,
+        numberCount: 4,
+        failChance: 0.4,
+        rewardTiers: [
+            { amount: 20, chance: 0.4 },
+            { amount: 50, chance: 0.3 },
+            { amount: 100, chance: 0.2 },
+            { amount: 500, chance: 0.1 }
+        ]
+    },
+    {
+        id: 'red-envelope',
+        type: 'usdt',
+        name: '🧧 Red Envelope',
+        description: 'Китайська традиція з сюрпризом. Але не всі конверти виграшні!',
+        image: '/redEnvelope.png',
+        imageLogo: '/redEnvelope-logo.png',
+        rules: 'Удача посміхнеться найхоробрішим.',
+        cost: 50,
+        hourlyProfit: 500,
+        experience: 500,
+        numberCount: 6,
+        failChance: 0.6,
+        rewardTiers: [
+            { amount: 50, chance: 0.3 },
+            { amount: 100, chance: 0.3 },
+            { amount: 500, chance: 0.2 },
+            { amount: 1000, chance: 0.2 }
+        ]
+    },
+    {
+        id: 'diamond-vault',
+        type: 'usdt',
+        name: '💎 Diamond Vault',
+        description: 'Секретний сейф із багатством. Але лише один із ключів справжній!',
+        image: '/diamondVault.png',
+        imageLogo: '/diamondVault-logo.png',
+        rules: 'Зітри ключі.',
+        cost: 100,
+        hourlyProfit: 1000,
+        experience: 1000,
+        numberCount: 3,
+        failChance: 0.7,
+        rewardTiers: [
+            { amount: 100, chance: 0.2 },
+            { amount: 150, chance: 0.2 },
+            { amount: 500, chance: 0.1 },
+            { amount: 1000, chance: 0.05 }
+        ]
+    },
+    {
+        id: 'birthday-blast',
+        type: 'gift',
+        name: '🎂 Birthday Blast',
+        description: 'Сюрприз до дня народження! Подаруй друзям шанс зірвати куш 🎉',
+        image: '/birthdayBlast.png',
+        imageLogo: '/birthdayBlast-logo.png',
+        rules: 'Сотри 3 числа. Якщо збігаються з виграшними — отримаєш подарунок!',
+        cost: 5,
+        hourlyProfit: 100,
+        experience: 100,
+        numberCount: 3,
+        failChance: 0.3,
+        rewardTiers: [
+            { amount: 5, chance: 0.5 },
+            { amount: 10, chance: 0.3 },
+            { amount: 50, chance: 0.2 },
+            { amount: 100, chance: 0.1 }
+        ]
+    },
+    {
+        id: 'secret-surprise',
+        type: 'gift',
+        name: '🎁 Secret Surprise',
+        description: 'Несподіванка для друга — відкрий та дізнайся, що всередині!',
+        image: '/secretSurprise.png',
+        imageLogo: '/secretSurprise-logo.png',
+        rules: 'Сотри 4 числа. Якщо серед них є виграшне — отримаєш бонус!',
+        cost: 5,
+        hourlyProfit: 100,
+        experience: 100,
+        numberCount: 4,
+        failChance: 0.35,
+        rewardTiers: [
+            { amount: 5, chance: 0.5 },
+            { amount: 10, chance: 0.3 },
+            { amount: 20, chance: 0.15 },
+            { amount: 100, chance: 0.05 }
+        ]
+    },
+    {
+        id: 'friendly-flame',
+        type: 'gift',
+        name: '🔥 Friendly Flame',
+        description: 'Запали емоції! Надішли лотерею тому, хто заслуговує на удачу!',
+        image: '/friendlyFlame.png',
+        imageLogo: '/friendlyFlame-logo.png',
+        rules: 'Сотри 3 числа. Якщо хоча б два однакові — виграш твій!',
+        cost: 10,
+        hourlyProfit: 200,
+        experience: 200,
+        numberCount: 3,
+        failChance: 0.4,
+        rewardTiers: [
+            { amount: 10, chance: 0.5 },
+            { amount: 20, chance: 0.3 },
+            { amount: 50, chance: 0.15 },
+            { amount: 100, chance: 0.05 }
+        ]
+    },
+    {
+        id: 'just-because',
+        type: 'gift',
+        name: '🌈 Just Because',
+        description: 'Без причини — просто подарунок. Бо іноді так треба 💛',
+        image: '/justBecause.png',
+        imageLogo: '/justBecause-logo.png',
+        rules: 'Сотри 5 чисел. Якщо збігаються з секретним кодом — ти виграв!',
+        cost: 20,
+        hourlyProfit: 500,
+        experience: 500,
+        numberCount: 5,
+        failChance: 0.5,
+        rewardTiers: [
+            { amount: 20, chance: 0.5 },
+            { amount: 50, chance: 0.3 },
+            { amount: 100, chance: 0.15 },
+            { amount: 500, chance: 0.05 }
+        ]
+    },
+    {
+        id: 'thanks-card',
+        type: 'gift',
+        name: '💌 Thanks Card',
+        description: 'Хочеш подякувати комусь особливому? Зроби це через лотерею 🙌',
+        image: '/thanksCard.png',
+        imageLogo: '/thanksCard-logo.png',
+        rules: 'Сотри 4 цифри. Якщо випаде подяка — отримаєш бонус!',
+        cost: 50,
+        hourlyProfit: 1000,
+        experience: 1000,
+        numberCount: 4,
+        failChance: 0.35,
+        rewardTiers: [
+            { amount: 50, chance: 0.5 },
+            { amount: 100, chance: 0.3 },
+            { amount: 150, chance: 0.15 },
+            { amount: 1000, chance: 0.05 }
+        ]
     }
+
+
+
+
+
 ];
 
-export const CardsList:FC=()=>{
-    const [selected, setSelected] = useState<null | typeof lotteries[0]>(null);
-    return (<div className="bg-gradient-to-b from-pink-900 to-purple-900 min-h-screen p-2 pb-20">
-        <div className="grid grid-cols-2 gap-1">
-            {lotteries.sort((a, b) => a.cost - b.cost).map((lottery) => (
-                <div key={lottery.id} onClick={() => setSelected(lottery)}>
-                    <Card lottery={lottery}/>
+export const CardsList: FC = () => {
+    const { store } = useContext(Context);
+    const [selected, setSelected] = useState<null | (typeof lotteries[0] & { origin?: string })>(null);
+    const [filter, setFilter] = useState<"coin" | "usdt" | "gift" | "saved">("coin");
+    const [savedType, setSavedType] = useState<"purchased" | "received">("purchased");
+
+    const getSavedLotteries = () => {
+        if (!store.user) return [];
+
+        if (savedType === "purchased") {
+            const counts: Record<string, number> = {};
+            store.user.lotteries.purchased.forEach((id: string) => {
+                counts[id] = (counts[id] || 0) + 1;
+            });
+
+            return Object.entries(counts)
+                .map(([id, count]) => {
+                    const lottery = lotteries.find((l) => l.id === id);
+                    return lottery ? { ...lottery, count } : null;
+                })
+                .filter(Boolean);
+        }
+
+        if (savedType === "received") {
+            const counts: Record<string, { count: number; from: string }> = {};
+
+            store.user.lotteries.received.forEach((entry: { id: string; from: string }) => {
+                const key = JSON.stringify({ id: entry.id, from: entry.from });
+                if (!counts[key]) {
+                    counts[key] = { count: 1, from: entry.from };
+                } else {
+                    counts[key].count += 1;
+                }
+            });
+
+            return Object.entries(counts)
+                .map(([key, value]) => {
+                    const { id, from } = JSON.parse(key);
+                    const lottery = lotteries.find((l) => l.id === id);
+                    return lottery ? { ...lottery, count: value.count, from } : null;
+                })
+                .filter(Boolean);
+        }
+
+        return [];
+    };
+
+    const purchasedCount = store.user?.lotteries.purchased.length || 0;
+    const receivedCount = store.user?.lotteries.received.length || 0;
+    const totalSaved = purchasedCount + receivedCount;
+
+    const filtered =
+        filter === "saved"
+            ? getSavedLotteries()
+            : lotteries.filter((lottery) => lottery.type === filter);
+
+    return (
+        <div className="bg-gradient-to-b from-pink-900 to-purple-900 min-h-screen p-2 pb-20">
+            {/* Головні фільтри */}
+            <div className="flex justify-around mb-3">
+                {[
+                    { label: "💰Монети", value: "coin" },
+                    { label: "🪙USDT", value: "usdt" },
+                    { label: "🎁Подарунки", value: "gift" },
+                ].map((btn) => (
+                    <button
+                        key={btn.value}
+                        onClick={() => setFilter(btn.value as any)}
+                        className={`px-1 py-1 rounded-full text-sm font-medium transition ${
+                            filter === btn.value ? "bg-yellow-400 text-black" : "bg-white/20 text-white"
+                        }`}
+                    >
+                        {btn.label}
+                    </button>
+                ))}
+
+                {/* Кнопка "Збережені" з бейджиком */}
+                <div className="relative">
+                    <button
+                        onClick={() => setFilter("saved")}
+                        className={`px-1 py-1 rounded-full text-sm font-medium transition ${
+                            filter === "saved" ? "bg-yellow-400 text-black" : "bg-white/20 text-white"
+                        }`}
+                    >
+                        ✅Збережені
+                    </button>
+                    <Badge count={totalSaved} />
                 </div>
-            ))}
+            </div>
+
+            {filter === "saved" && (
+                <div className="flex justify-center gap-4 mb-3">
+                    <div className="relative">
+                        <button
+                            onClick={() => setSavedType("purchased")}
+                            className={`px-3 py-1 rounded-full text-xs font-medium transition ${
+                                savedType === "purchased" ? "bg-yellow-300 text-black" : "bg-white/20 text-white"
+                            }`}
+                        >
+                            Куплені
+                        </button>
+                        <Badge count={purchasedCount} />
+                    </div>
+
+                    <div className="relative">
+                        <button
+                            onClick={() => setSavedType("received")}
+                            className={`px-3 py-1 rounded-full text-xs font-medium transition ${
+                                savedType === "received" ? "bg-yellow-300 text-black" : "bg-white/20 text-white"
+                            }`}
+                        >
+                            Отримані
+                        </button>
+                        <Badge count={receivedCount} />
+                    </div>
+                </div>
+            )}
+
+            {/* Список лотерей */}
+            <div className="grid grid-cols-2 gap-1">
+                {filtered
+                    .sort((a: any, b: any) => a.cost - b.cost)
+                    .map((lottery: any) => (
+                        <div
+                            key={lottery.id}
+                            onClick={() => setSelected({ ...lottery, origin: filter === "saved" ? savedType : null })}
+                        >
+                            <Card lottery={lottery} count={lottery.count} from={lottery.from} />
+                        </div>
+                    ))}
+            </div>
+
+            {selected && <CardOverview lottery={selected} onClose={() => setSelected(null)} />}
         </div>
-        {selected && (
-            <CardOverview lottery={selected} onClose={() => setSelected(null)} />
-        )}
-    </div>)
-}
+    );
+};

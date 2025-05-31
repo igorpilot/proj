@@ -11,6 +11,7 @@ export interface IUser {
     friends: string[]
     completedTasks: string[]
     level: number
+    experience: number
     lastActiveAt: any
     consecutiveLoginDays: number
     ticketsUsedToday: number
@@ -21,4 +22,12 @@ export interface IUser {
     referralFrom: string | null
     createdAt: any
     updatedAt:any
+    lotteries: {
+        purchased: string[],
+        received: {
+            id: string;
+            from: string;
+            date: Date;
+        }[]
+    }
 }

@@ -26,9 +26,7 @@ export const TaskDeckPreview: FC<Props> = ({ task, type, onClick }) => {
                 </div>
                 <div>
                     <div className="mt-2 text-yellow-300 font-semibold flex items-center">
-                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12zm-1-5a1 1 0 011-1h2V7h-3V5h4v6h-2v2h-2v-2z"/>
-                        </svg>
+                        💰
                         {task.reward} coins
                     </div>
                     <div className="text-xs text-right text-pink-300 capitalize mt-1 font-medium">

@@ -20,6 +20,8 @@ export default class Store {
     isAuth = false;
     isLoading = true;
     passiveProfit = 0
+    xpRequired = 0
+
 
     constructor() {
         makeAutoObservable(this);
@@ -41,13 +43,23 @@ export default class Store {
     setPassiveProfit(number: number) {
         this.passiveProfit = number;
     }
-
+    getXpForLevel = (level: number): number => {
+        return 1000 * Math.pow(5, level - 1);
+    };
+    levelUp(xpToAdd: number) {
+        this.user.experience += xpToAdd;
+        while (this.user.experience >= this.xpRequired) {
+            this.user.experience -= this.xpRequired;
+            this.user.level += 1;
+        }
+    }
     async authFromTelegram(telegramUser: any) {
         try {
             const res = await $api.post(`/telegram-auth`, telegramUser);
             this.setUser(res.data);
             this.getFriends(res.data.telegramId);
             this.getTasks()
+            this.xpRequired = this.getXpForLevel(this.user.level);
         } catch (e) {
             console.error("❌ Auth error:", e);
         } finally {
@@ -96,9 +108,9 @@ export default class Store {
         }
     }
 
-    async dailyReward(userId: string, actuallyBalance: number) {
+    async dailyReward() {
         try {
-            const res = await $api.post(`/dailyReward`, {userId, actuallyBalance});
+            const res = await $api.post(`/dailyReward/${this.user.telegramId}`, {actuallyBalance: this.user.balance});
             this.setUser(res.data);
         } catch (e) {
             console.error(e);
@@ -140,9 +152,29 @@ export default class Store {
         try {
             const res = await $api.post(`/useTicket/${this.user.telegramId}`, {lottery});
             this.setUser(res.data.user);
+            this.xpRequired = this.getXpForLevel(this.user.level);
         } catch (e) {
             console.error(e)
         }
 
     }
+
+    async ticketUse(lottery: any, action: "play" | "save") {
+        try {
+            const res = await $api.post(`/lottery/${this.user.telegramId}`, {lottery, action});
+            this.setUser(res.data.user);
+            this.xpRequired = this.getXpForLevel(this.user.level);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    async ticketUsed(lottery: any) {
+        try {
+            const res = await $api.put(`/lottery/used/${this.user.telegramId}`, {lottery});
+            this.setUser(res.data.user);
+        }catch (e) {
+            console.error(e)
+        }
+    }
+
 }

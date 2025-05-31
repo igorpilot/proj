@@ -1,11 +1,11 @@
 import {FC, useContext} from 'react';
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
+import {LevelProgressBar} from "./LevelProgressBar";
 
 export const Profile: FC = observer(() => {
-    const {store}=useContext(Context)
-    const user=store.user
-
+    const { store } = useContext(Context);
+    const user = store.user;
 
     return (
         <div className="bg-gradient-to-r from-pink-700 to-pink-800 text-white shadow-md p-2 flex items-center justify-between">
@@ -17,7 +17,12 @@ export const Profile: FC = observer(() => {
                 />
                 <div>
                     <h2 className="text-lg font-semibold">{user.firstName}</h2>
-                    <p className="text-sm text-yellow-200">Level {user.level}</p>
+                    {/* 🆕 Прогрес левела */}
+                    <LevelProgressBar
+                        level={user.level}
+                        experience={user.experience}
+                        xpRequired={store.xpRequired}
+                    />
                 </div>
             </div>
             <div className="text-right">

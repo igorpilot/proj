@@ -6,4 +6,5 @@ export interface ITask {
     title: string,
     description: string,
     reward: number
+    experience: number
 }

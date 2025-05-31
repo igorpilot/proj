@@ -19,7 +19,7 @@ export const Task: FC<TaskProps> = observer(({ task}) => {
             <h3 className="text-lg font-bold">{task.title}</h3>
             <p className="text-sm text-pink-200">{task.description}</p>
             <div className="flex justify-between items-center">
-                <span className="text-yellow-300 font-semibold">💰 {task.reward} coins</span>
+                <span className="text-yellow-300 font-semibold">💰{task.reward} coins +{task.experience}XP</span>
                 {!completed && task.type === "tickets" && <span className="text-yellow-300 font-semibold"> {store.user.ticketsUsedToday}/{task.number}</span>}
                 {!completed && task.type === "friends" && <span className="text-yellow-300 font-semibold"> {store.user.friends.length}/{task.number}</span>}
                 {!completed && task.type === "login" && <span className="text-yellow-300 font-semibold"> {store.user.consecutiveLoginDays}/{task.number}</span>}

@@ -9,7 +9,7 @@ export const DailyRewardChest = observer(() => {
     const [modalVisible, setModalVisible] = useState(false);
 
     const handleOpen  = async () => {
-        await store.dailyReward(store.user.telegramId, store.user.balance)
+        await store.dailyReward()
         setOpened(true);
         setModalVisible(true);
     };
@@ -73,7 +73,7 @@ export const DailyRewardChest = observer(() => {
                             onClick={e => e.stopPropagation()}
                         >
                             <img src="/coffer-opened.png" className="w-28 h-28 mx-auto mb-3"/>
-                            <h3 className="text-2xl font-bold text-yellow-900 mb-1">+50 монет</h3>
+                            <h3 className="text-2xl font-bold text-yellow-900 mb-1">+50 монет +50XP</h3>
                             <button
                                 onClick={() => setModalVisible(false)}
                                 className="mt-4 bg-yellow-600 text-white px-5 py-2 rounded-lg font-medium"
