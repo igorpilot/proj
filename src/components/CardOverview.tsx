@@ -40,7 +40,7 @@ export const CardOverview: FC<Props> = ({ lottery, onClose }) => {
         }
     };
     const handlerSendFriend = async ()=>{
-        const referralLink = `https://t.me/JetTicketBot?start=gift_lottery-${store.user.telegramId}-${lottery.id}-${Date.now().toString(20)}`
+        const referralLink = `🎟 Я дарую тобі лотерейку в JetTicket! Натисни та вигравай 🎁 https://t.me/JetTicketBot?start=gift_lottery-${store.user.telegramId}-${lottery.id}-${Date.now().toString(20)}`
         console.log(referralLink)
         const tg = window.Telegram?.WebApp as any;
         try {
@@ -48,10 +48,9 @@ export const CardOverview: FC<Props> = ({ lottery, onClose }) => {
                 await store.ticketUse(lottery, "save");
             }
             if (tg?.initData && tg?.shareLink) {
-                tg.shareLink(
-                    referralLink,
-                    `🎟 Я дарую тобі лотерейку в JetTicket! Натисни та вигравай 🎁`
-                );
+                const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent('🎟 Я дарую тобі лотерейку в JetTicket! Натисни та вигравай 🎁')}`;
+                window.open(shareUrl, '_blank');
+
             } else if (navigator.share) {
                 await navigator.share({
                     title: "JetTicket 🎮",
